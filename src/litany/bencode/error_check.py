@@ -1,12 +1,18 @@
-def _check_missing_terminator(data: bytes):
+def _check_missing_terminator(data: bytes) -> int:
     """
     Ensures data has the 'e' terminator
     :param data: Data to check
     :type data: bytes
     :raises ValueError: Missing 'e' terminator
+
+    :returns terminator_index:
+    :rtype terminator_index: int
     """
+    terminator_index: int = data.find(b"e")
     if b"e" not in data:
         raise ValueError("Missing 'e' terminator")
+    else:
+        return terminator_index
 
 
 def _check_has_leading_zero(data: bytes):

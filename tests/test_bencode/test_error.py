@@ -10,7 +10,9 @@ from src.litany.bencode.error_check import (
 class TestCheckMissingTerminator(unittest.TestCase):
     def test_succeeds(self):
         data = b"i23e"
-        _check_missing_terminator(data)
+        expected = 3
+        actual = _check_missing_terminator(data)
+        self.assertEqual(expected, actual)
 
     def test_fails(self):
         data = b"i23"
