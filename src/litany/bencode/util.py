@@ -19,3 +19,19 @@ def _get_upto_first_nondigit(
             return (data[0:i], i)
 
     return (data, -1)
+
+
+def _get_bytestring_length(data: bytes) -> int:
+    """
+    Gets the length of a bytestring as denoted by the prefix.
+     <length>:<content> format expected.
+     :param data: Data to parse
+     :type data: bytes
+
+     :returns length:
+     :rtype int
+    """
+    colon_index = data.find(b":")
+    data_length_bytes = data[0:colon_index]
+
+    return int(data_length_bytes)
