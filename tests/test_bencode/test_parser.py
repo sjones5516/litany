@@ -1,6 +1,20 @@
 import unittest
 
-from src.litany.bencode.parser import _parse_int, _parse_byte_string
+from src.litany.bencode.parser import _parse_int, _parse_byte_string, _parse_data
+
+
+class TestParseData(unittest.TestCase):
+    def test_int(self):
+        data = b"i0e"
+        expected = (0, 2)
+        actual = _parse_data(data)
+        self.assertEqual(expected, actual)
+
+    def test_bytestring(self):
+        data = b"3:abc"
+        expected = (b"abc", 4)
+        actual = _parse_data(data)
+        self.assertEqual(expected, actual)
 
 
 class TestParseInt(unittest.TestCase):

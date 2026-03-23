@@ -1,4 +1,6 @@
 _BYTESTRING_WHITELIST = {b"-"}
+CHUNK_TYPES = int | bytes | list | dict
+
 
 def _get_datatype(data: bytes) -> type:
     """

@@ -12,7 +12,39 @@ from .error_check import (
     _check_unexpected_eof_before_completing_string,
 )
 
-from .util import _get_bytestring_content, _get_bytestring_expected_total_data_length
+from .util import (
+    _get_bytestring_content,
+    _get_bytestring_expected_total_data_length,
+    _get_datatype,
+    CHUNK_TYPES,
+)
+
+
+def _parse_data(data: bytes) -> tuple[CHUNK_TYPES, int]:
+    """
+    Parses bytes of some bencoded format
+    :param data: Data to parse
+    :type data: bytes
+
+    :raises ValueError: Missing 'e' terminator
+    :raises ValueError: Has a leading zero
+    :raises ValueError: Is negative zero
+    :raises ValueError: Contains non-digit characters
+    :raises ValueError: Negative length
+    :raises ValueError: Length not followed by colon
+    :raises ValueError: Unexpected EOF before completing string
+    :raises NotImplementedError: Tries to parse list or dict
+
+    :returns (parsed integer, end index):
+    :rtype tuple[int, int]:
+    """
+    datatype = _get_datatype(data)
+    if datatype is int:
+        return _parse_int(data)
+    elif datatype is bytes:
+        return _parse_byte_string(data)
+    else:
+        raise NotImplementedError(f"Tried to parse {datatype}")
 
 
 def _parse_int(data: bytes) -> tuple[int, int]:
