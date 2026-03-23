@@ -1,7 +1,8 @@
 _BYTESTRING_WHITELIST = {b"-"}
 
+
 def _get_upto_first_nondigit(
-    data: bytes, whitelist: set[bytes] = {}
+    data: bytes, whitelist: set[bytes] = set()
 ) -> tuple[bytes, int]:
     """
     Gets up to the first nondigit character in data.
@@ -64,6 +65,6 @@ def _get_bytestring_expected_total_data_length(data: bytes) -> int:
      :returns length:
      :rtype bytes
     """
-    length_bytes, _ = _get_upto_first_nondigit(data, _BYTESTRING_WHITELIST) 
+    length_bytes, _ = _get_upto_first_nondigit(data, _BYTESTRING_WHITELIST)
     length = _get_bytestring_length(data)
     return len(length_bytes) + length + 1
