@@ -26,3 +26,14 @@ def _check_has_leading_zero(data: bytes):
 
     if case_1 or case_2:
         raise ValueError("Has a leading zero")
+
+def _check_is_negative_zero(data: bytes):
+    """
+    Ensures data is not i-0e
+    i<base10 integer>e format expected.
+    :param data: Data to check
+    :type data: bytes
+    :raises ValueError: Is negative zero
+    """
+    if data == b"i-0e":
+        raise ValueError("Is negative zero")
