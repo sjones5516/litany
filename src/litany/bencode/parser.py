@@ -96,3 +96,17 @@ def _parse_byte_string(data: bytes) -> tuple[bytes, int]:
     content = _get_bytestring_content(data)
     end = _get_bytestring_expected_total_data_length(data) - 1
     return content, end
+
+
+def _parse_list(data: bytes) -> tuple[list, int]:
+    """
+    Parses bytes formatted as l<contents>e
+    :param data: Data to parse
+    :type data: bytes
+
+    :raises ValueError: Missing 'e' terminator
+
+    :returns (parsed list, end index):
+    :rtype tuple[list, int]:
+    """
+    pass

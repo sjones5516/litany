@@ -87,3 +87,27 @@ class TestParseByteString(unittest.TestCase):
     def test_unexpected_eof_before_completing_string(self):
         data = b"3:ab"
         self.assertRaises(ValueError, _parse_byte_string, data)
+
+
+class TestParseList(unittest.TestCase):
+    def test_empty(self):
+        data = b"le"
+        expected = ([], 1)
+        actual = _parse_byte_string(data)
+        self.assertEqual(expected, actual)
+
+    def test_single(self):
+        data = b"li23ee"
+        expected = ([23], 5)
+        actual = _parse_byte_string(data)
+        self.assertEqual(expected, actual)
+
+    def test_multiple(self):
+        data = b"li23e3:abce"
+        expected = ([23, "abc"], 10)
+        actual = _parse_byte_string(data)
+        self.assertEqual(expected, actual)
+
+    def test_nested(self):
+        data = b"lli23ei23eei23ee"
+        expected = ([[23, 23], 23], 15)
