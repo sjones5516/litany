@@ -53,10 +53,10 @@ def _parse_byte_string(data: bytes) -> tuple[bytes, int]:
     :returns (parsed bytes, end index):
     :rtype tuple[int, int]:
     """
+    assert data[0:1] in b"123456790-"
     _check_length_not_followed_by_colon(data)
     _check_negative_length(data)
     _check_unexpected_eof_before_completing_string(data)
     content = _get_bytestring_content(data)
     end = _get_bytestring_expected_total_data_length(data) - 1
     return content, end
-
