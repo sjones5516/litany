@@ -6,6 +6,7 @@ from src.litany.bencode.error_check import (
     _check_is_negative_zero,
     _check_length_not_followed_by_colon,
     _check_negative_length,
+    _check_unexpected_eof_before_completing_string,
 )
 
 
@@ -67,3 +68,19 @@ class TestCheckNegativeLength(unittest.TestCase):
     def test_fails(self):
         data = b"-1:a"
         self.assertRaises(ValueError, _check_negative_length, data)
+
+
+class TestUnexpectedEOFBeforeCompletingString(unittest.TestCase):
+    def test_succeeds(self):
+        data = b"1:a"
+        _check_unexpected_eof_before_completing_string(data)
+
+    def test_zero_length(self):
+        data = b"0:"
+        _check_unexpected_eof_before_completing_string(data)
+
+    def test_too_long(self):
+        data = b"3:ab"
+        self.assertRaises(
+            ValueError, _check_unexpected_eof_before_completing_string, data
+        )

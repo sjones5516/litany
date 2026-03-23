@@ -75,3 +75,18 @@ def _check_negative_length(data: bytes):
     length = _get_bytestring_length(data)
     if length < 0:
         raise ValueError("Negative length")
+
+
+def _check_unexpected_eof_before_completing_string(data):
+    """
+    Ensures the expected length of the data is <= the length of the data
+    <length>:<content> format expected
+    :param data: Data to check
+    :type data: bytes
+    :raises ValueError: Unexpected EOF before completing string
+    """
+    length = _get_bytestring_length(data)
+    _, first_nondigit_idx = _get_upto_first_nondigit(data, {b"-"})
+    content_length = len(data[first_nondigit_idx + 1 :])
+    if length > content_length:
+        raise ValueError("Unexpected EOF before completing string")
