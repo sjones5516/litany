@@ -1,6 +1,11 @@
 import unittest
 
-from src.litany.bencode.parser import _parse_int, _parse_byte_string, _parse_data
+from src.litany.bencode.parser import (
+    _parse_int,
+    _parse_byte_string,
+    _parse_data,
+    _parse_list,
+)
 
 
 class TestParseData(unittest.TestCase):
@@ -93,21 +98,27 @@ class TestParseList(unittest.TestCase):
     def test_empty(self):
         data = b"le"
         expected = ([], 1)
-        actual = _parse_byte_string(data)
+        actual = _parse_list(data)
         self.assertEqual(expected, actual)
 
     def test_single(self):
         data = b"li23ee"
         expected = ([23], 5)
-        actual = _parse_byte_string(data)
+        actual = _parse_list(data)
         self.assertEqual(expected, actual)
 
     def test_multiple(self):
         data = b"li23e3:abce"
-        expected = ([23, "abc"], 10)
-        actual = _parse_byte_string(data)
+        expected = ([23, b"abc"], 10)
+        actual = _parse_list(data)
         self.assertEqual(expected, actual)
 
     def test_nested(self):
         data = b"lli23ei23eei23ee"
         expected = ([[23, 23], 23], 15)
+        actual = _parse_list(data)
+        self.assertEqual(expected, actual)
+
+    def test_missing_e_terminator(self):
+        data = b"li23e"
+        self.assertRaises(ValueError, _parse_list, data)

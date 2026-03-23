@@ -43,6 +43,8 @@ def _parse_data(data: bytes) -> tuple[CHUNK_TYPES, int]:
         return _parse_int(data)
     elif datatype is bytes:
         return _parse_byte_string(data)
+    elif datatype is list:
+        return _parse_list(data)
     else:
         raise NotImplementedError(f"Tried to parse {datatype}")
 
@@ -109,4 +111,20 @@ def _parse_list(data: bytes) -> tuple[list, int]:
     :returns (parsed list, end index):
     :rtype tuple[list, int]:
     """
-    pass
+    assert data[0:1] == b"l"
+    absolute_cursor = 1
+    search_space = data[1:]
+    return_data = list()
+    while len(search_space) > 0:
+        if search_space[0:1] == b"e":
+            break
+
+        content, end = _parse_data(search_space)
+        return_data.append(content)
+        absolute_cursor += end + 1
+        search_space = search_space[end + 1 :]
+
+    if data[absolute_cursor:absolute_cursor + 1] != b"e":
+        raise ValueError("Missing 'e' terminator")
+
+    return (return_data, absolute_cursor)
