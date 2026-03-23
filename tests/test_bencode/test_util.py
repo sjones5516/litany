@@ -5,6 +5,7 @@ from src.litany.bencode.util import (
     _get_bytestring_length,
     _get_bytestring_content,
     _get_bytestring_expected_total_data_length,
+    _BYTESTRING_WHITELIST
 )
 
 
@@ -35,7 +36,7 @@ class TestGetUptoFirstNondigit(unittest.TestCase):
 
     def test_whitelisted(self):
         data = b"-023"
-        whitelist = {b"-"}
+        whitelist = _BYTESTRING_WHITELIST
         expected = (data, -1)
         actual = _get_upto_first_nondigit(data, whitelist)
         self.assertEqual(expected, actual)
