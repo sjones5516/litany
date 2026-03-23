@@ -50,3 +50,18 @@ def _get_bytestring_content(data: bytes) -> bytes:
     colon_index = data.find(b":")
     length = _get_bytestring_length(data)
     return data[colon_index + 1 : colon_index + length + 1]
+
+
+def _get_bytestring_expected_total_data_length(data: bytes) -> int:
+    """
+    Gets the expected total length of a bytestring.
+     <length>:<content> format expected.
+     :param data: Data to parse
+     :type data: bytes
+
+     :returns length:
+     :rtype bytes
+    """
+    length_bytes, _ = _get_upto_first_nondigit(data, {b"-"})
+    length = _get_bytestring_length(data)
+    return len(length_bytes) + length + 1
