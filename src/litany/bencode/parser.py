@@ -50,6 +50,10 @@ def _parse_byte_string(data: bytes) -> tuple[bytes, int]:
     :param data: Data to parse
     :type data: bytes
 
+    :raises ValueError: Negative length
+    :raises ValueError: Length not followed by colon
+    :raises ValueError: Unexpected EOF before completing string
+
     :returns (parsed bytes, end index):
     :rtype tuple[int, int]:
     """
