@@ -4,6 +4,7 @@ from src.litany.bencode.error_check import (
     _check_missing_terminator,
     _check_has_leading_zero,
     _check_is_negative_zero,
+    _check_length_not_followed_by_colon,
 )
 
 
@@ -41,3 +42,17 @@ class TestCheckIsNegativeZero(unittest.TestCase):
     def test_fails(self):
         data = b"i-0e"
         self.assertRaises(ValueError, _check_is_negative_zero, data)
+
+
+class TestLengthNotFollowedByColon(unittest.TestCase):
+    def test_succeeds(self):
+        data = b"1:e"
+        _check_length_not_followed_by_colon(data)
+
+    def test_nocolon(self):
+        data = b"1e"
+        self.assertRaises(ValueError, _check_length_not_followed_by_colon, data)
+
+    def test_colon_after_char(self):
+        data = b"1a:e"
+        self.assertRaises(ValueError, _check_length_not_followed_by_colon, data)

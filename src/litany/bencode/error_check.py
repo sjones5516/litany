@@ -1,4 +1,7 @@
+from .util import _get_upto_first_nondigit
+
 _TERMINATOR = b"e"
+
 
 def _check_missing_terminator(data: bytes) -> int:
     """
@@ -35,6 +38,7 @@ def _check_has_leading_zero(data: bytes):
     if case_1 or case_2:
         raise ValueError("Has a leading zero")
 
+
 def _check_is_negative_zero(data: bytes):
     """
     Ensures data is not i-0e
@@ -45,3 +49,17 @@ def _check_is_negative_zero(data: bytes):
     """
     if data == b"i-0e":
         raise ValueError("Is negative zero")
+
+
+def _check_length_not_followed_by_colon(data: bytes):
+    """
+    Ensures length is followed by colon.
+    <length>:<content> format expected.
+    :param data: Data to check
+    :type data: bytes
+    :raises ValueError: Length not followed by colon
+    """
+    _, idx = _get_upto_first_nondigit(data, {b"-"})
+    if idx == -1 or data[idx : idx + 1] != b":":
+        raise ValueError("Length not followed by colon")
+
