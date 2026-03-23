@@ -87,7 +87,7 @@ def _parse_byte_string(data: bytes) -> tuple[bytes, int]:
     :raises ValueError: Unexpected EOF before completing string
 
     :returns (parsed bytes, end index):
-    :rtype tuple[int, int]:
+    :rtype tuple[bytes, int]:
     """
     assert data[0:1] in b"123456790-"
     _check_length_not_followed_by_colon(data)
