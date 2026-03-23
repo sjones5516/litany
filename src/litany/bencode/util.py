@@ -1,5 +1,27 @@
 _BYTESTRING_WHITELIST = {b"-"}
 
+def _get_datatype(data: bytes) -> type:
+    """
+    Find the type of data based on the prefix.
+    :param data: Data to check
+    :type data: bytes
+    :raises ValueError: Invalid type encountered
+    :returns Type of data:
+    :rtype: CHUNK_TYPES
+    """
+    assert len(data) >= 1
+    prefix = data[0:1]
+    if prefix == b"i":
+        return int
+    elif prefix == b"l":
+        return list
+    elif prefix == b"d":
+        return dict
+    elif prefix in b"123456790-":
+        return bytes
+    else:
+        raise ValueError("Invalid type encountered")
+
 
 def _get_upto_first_nondigit(
     data: bytes, whitelist: set[bytes] = set()
