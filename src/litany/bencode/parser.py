@@ -37,3 +37,14 @@ def _parse_int(data: bytes) -> tuple[int, int]:
         return int(int_bytes), terminator_index
     except ValueError:
         raise ValueError("Contains non-digit characters")
+
+def _parse_byte_string(data: bytes) -> tuple[bytes, int]:
+    """
+    Parses bytes formatted as <length>:<contents>
+    :param data: Data to parse
+    :type data: bytes
+
+    :returns (parsed bytes, end index):
+    :rtype tuple[int, int]:
+    """
+    pass

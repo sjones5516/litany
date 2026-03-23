@@ -35,3 +35,18 @@ def _get_bytestring_length(data: bytes) -> int:
     data_length_bytes = data[0:colon_index]
 
     return int(data_length_bytes)
+
+
+def _get_bytestring_content(data: bytes) -> bytes:
+    """
+    Gets the content of a bytestring.
+     <length>:<content> format expected.
+     :param data: Data to parse
+     :type data: bytes
+
+     :returns content:
+     :rtype bytes
+    """
+    colon_index = data.find(b":")
+    length = _get_bytestring_length(data)
+    return data[colon_index + 1 : colon_index + length + 1]

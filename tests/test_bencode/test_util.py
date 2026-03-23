@@ -1,6 +1,10 @@
 import unittest
 
-from src.litany.bencode.util import _get_upto_first_nondigit, _get_bytestring_length
+from src.litany.bencode.util import (
+    _get_upto_first_nondigit,
+    _get_bytestring_length,
+    _get_bytestring_content,
+)
 
 
 class TestGetUptoFirstNondigit(unittest.TestCase):
@@ -47,4 +51,18 @@ class TestGetBytestringLength(unittest.TestCase):
         data = b"-3:abc"
         expected = -3
         actual = _get_bytestring_length(data)
+        self.assertEqual(expected, actual)
+
+
+class TestGetBytestringContent(unittest.TestCase):
+    def test_exact(self):
+        data = b"2:aa"
+        expected = b"aa"
+        actual = _get_bytestring_content(data)
+        self.assertEqual(expected, actual)
+
+    def test_excess(self):
+        data = b"1:aa"
+        expected = b"a"
+        actual = _get_bytestring_content(data)
         self.assertEqual(expected, actual)
