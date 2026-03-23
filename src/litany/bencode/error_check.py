@@ -1,4 +1,4 @@
-from .util import _get_upto_first_nondigit
+from .util import _get_upto_first_nondigit, _get_bytestring_length
 
 _TERMINATOR = b"e"
 
@@ -63,3 +63,15 @@ def _check_length_not_followed_by_colon(data: bytes):
     if idx == -1 or data[idx : idx + 1] != b":":
         raise ValueError("Length not followed by colon")
 
+
+def _check_negative_length(data: bytes):
+    """
+    Ensures data does not have negative length.
+    <length>:<content> format expected.
+    :param data: Data to check
+    :type data: bytes
+    :raises ValueError: Negative length
+    """
+    length = _get_bytestring_length(data)
+    if length < 0:
+        raise ValueError("Negative length")
