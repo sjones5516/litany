@@ -9,14 +9,22 @@ from src.litany.bencode.parser import (
     _parse_dict,
 )
 
+
 class TestDecode(unittest.TestCase):
+    def test_success(self):
+        data = b"i0e"
+        expected = 0
+        actual = decode(data)
+        self.assertEqual(expected, actual)
+
     def test_null_root_value(self):
         data = b""
         self.assertRaises(ValueError, decode, data)
-    
+
     def test_non_singular_root_item(self):
         data = b"i32ei32e"
         self.assertRaises(ValueError, decode, data)
+
 
 class TestParseData(unittest.TestCase):
     def test_int(self):
@@ -28,6 +36,18 @@ class TestParseData(unittest.TestCase):
     def test_bytestring(self):
         data = b"3:abc"
         expected = (b"abc", 4)
+        actual = _parse_data(data)
+        self.assertEqual(expected, actual)
+
+    def test_list(self):
+        data = b"li32ei32ee"
+        expected = ([32, 32], 9)
+        actual = _parse_data(data)
+        self.assertEqual(expected, actual)
+
+    def test_dict(self):
+        data = b"d1:ai32ee"
+        expected = ({b"a": 32}, 8)
         actual = _parse_data(data)
         self.assertEqual(expected, actual)
 
@@ -172,4 +192,3 @@ class TestParseDict(unittest.TestCase):
     def test_missing_value_for_key(self):
         data = b"d1:ae"
         self.assertRaises(ValueError, _parse_dict, data)
-
