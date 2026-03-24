@@ -8,8 +8,8 @@ def _get_datatype(data: bytes) -> type:
     :param data: Data to check
     :type data: bytes
     :raises ValueError: Invalid type encountered
-    :returns Type of data:
-    :rtype: CHUNK_TYPES
+    :returns Type of data: int | bytes | list | dict:
+    :rtype: type
     """
     assert len(data) >= 1
     prefix = data[0:1]
