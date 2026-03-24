@@ -191,6 +191,9 @@ def _parse_dict(data: bytes) -> tuple[dict, int]:
         key_content, end = _parse_data(search_space)
         absolute_cursor += end + 1
 
+        if type(key_content) is not bytes:
+            raise ValueError("Key is not a string")
+
         if key_content in return_data:
             raise ValueError("Duplicate keys")
 
