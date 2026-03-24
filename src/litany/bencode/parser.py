@@ -64,10 +64,13 @@ def _parse_data(data: bytes) -> tuple[CHUNK_TYPES, int]:
     :raises ValueError: Negative length
     :raises ValueError: Length not followed by colon
     :raises ValueError: Unexpected EOF before completing string
-    :raises NotImplementedError: Tries to parse list or dict
+    :raises ValueError: Key is not a string
+    :raises ValueError: Duplicate keys
+    :raises ValueError: Keys not sorted
+    :raises ValueError: Missing value for a key
 
-    :returns (parsed integer, end index):
-    :rtype tuple[int, int]:
+    :returns (parsed data, end index):
+    :rtype tuple[CHUNK_TYPES, int]:
     """
     datatype = _get_datatype(data)
     if datatype is int:
@@ -187,9 +190,6 @@ def _parse_dict(data: bytes) -> tuple[dict, int]:
 
         key_content, end = _parse_data(search_space)
         absolute_cursor += end + 1
-
-        if type(key_content) is not bytes:
-            raise ValueError("Key is not string")
 
         if key_content in return_data:
             raise ValueError("Duplicate keys")
