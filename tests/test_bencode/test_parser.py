@@ -5,6 +5,7 @@ from src.litany.bencode.parser import (
     _parse_byte_string,
     _parse_data,
     _parse_list,
+    _parse_dict,
 )
 
 
@@ -122,3 +123,44 @@ class TestParseList(unittest.TestCase):
     def test_missing_e_terminator(self):
         data = b"li23e"
         self.assertRaises(ValueError, _parse_list, data)
+
+
+class TestParseDict(unittest.TestCase):
+    def test_empty(self):
+        data = b"de"
+        expected = ({}, 1)
+        actual = _parse_dict(data)
+        self.assertEqual(expected, actual)
+
+    def test_normal(self):
+        data = b"d7:meaningi42e4:wiki7:bencodee"
+        expected = ({b"meaning": 42, b"wiki": b"bencode"}, 29)
+        actual = _parse_dict(data)
+        self.assertEqual(expected, actual)
+
+    def test_nested(self):
+        data = b"d7:meaningi42e4:wikili32eee"
+        expected = ({b"meaning": 42, b"wiki": [32]}, 26)
+        actual = _parse_dict(data)
+        self.assertEqual(expected, actual)
+
+    def test_missing_e_terminator(self):
+        data = b"d7:meaningi42e4:wiki7:bencode"
+        self.assertRaises(ValueError, _parse_dict, data)
+
+    def test_key_is_not_a_string(self):
+        data = b"di32ei32ee"
+        self.assertRaises(ValueError, _parse_dict, data)
+
+    def test_duplicate_keys(self):
+        data = b"d7:meaningi42e7:meaningi24e"
+        self.assertRaises(ValueError, _parse_dict, data)
+
+    def test_keys_not_sorted(self):
+        data = b"d1:bi32e1:ai32ee"
+        self.assertRaises(ValueError, _parse_dict, data)
+
+    def test_missing_value_for_key(self):
+        data = b"d1:ae"
+        self.assertRaises(ValueError, _parse_dict, data)
+

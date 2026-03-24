@@ -46,7 +46,7 @@ def _parse_data(data: bytes) -> tuple[CHUNK_TYPES, int]:
     elif datatype is list:
         return _parse_list(data)
     else:
-        raise NotImplementedError(f"Tried to parse {datatype}")
+        return _parse_dict(data)
 
 
 def _parse_int(data: bytes) -> tuple[int, int]:
@@ -124,7 +124,61 @@ def _parse_list(data: bytes) -> tuple[list, int]:
         absolute_cursor += end + 1
         search_space = search_space[end + 1 :]
 
-    if data[absolute_cursor:absolute_cursor + 1] != b"e":
+    if data[absolute_cursor : absolute_cursor + 1] != b"e":
+        raise ValueError("Missing 'e' terminator")
+
+    return (return_data, absolute_cursor)
+
+
+def _parse_dict(data: bytes) -> tuple[dict, int]:
+    """
+    Parses bytes formatted as d<contents>e
+    :param data: Data to parse
+    :type data: bytes
+
+    :raises ValueError: Missing 'e' terminator
+    :raises ValueError: Key is not a string
+    :raises ValueError: Duplicate keys
+    :raises ValueError: Keys not sorted
+    :raises ValueError: Missing value for a key
+
+    :returns (parsed dict, end index):
+    :rtype tuple[dict, int]:
+    """
+    assert data[0:1] == b"d"
+    absolute_cursor = 1
+    search_space = data[1:]
+    prev_key = None
+    return_data = dict()
+    while len(search_space) > 0:
+        breakpoint()
+        if search_space[0:1] == b"e":
+            break
+
+        key_content, end = _parse_data(search_space)
+        absolute_cursor += end + 1
+
+        if type(key_content) is not bytes:
+            raise ValueError("Key is not string")
+
+        if key_content in return_data:
+            raise ValueError("Duplicate keys")
+
+        if prev_key is not None and prev_key > key_content:
+            raise ValueError("Keys not sorted")
+
+        search_space = search_space[end + 1 :]
+        prev_key = key_content
+
+        if search_space[0:1] == b"e":
+            raise ValueError("Missing value for a key")
+
+        value_content, end = _parse_data(search_space)
+        return_data[key_content] = value_content
+        absolute_cursor += end + 1
+        search_space = search_space[end + 1 :]
+
+    if data[absolute_cursor : absolute_cursor + 1] != b"e":
         raise ValueError("Missing 'e' terminator")
 
     return (return_data, absolute_cursor)
