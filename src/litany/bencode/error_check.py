@@ -2,6 +2,28 @@ from .util import _get_upto_first_nondigit, _get_bytestring_length
 
 _TERMINATOR = b"e"
 
+def _check_null_root_value(data: bytes):
+    """
+    Ensures data is not a null root value
+    :param data: Data to check
+    :type data: bytes
+    :raises ValueError: Null root value
+    """
+    if data == b"":
+        raise ValueError("Null root value")
+
+def _check_non_singular_root_item(data: bytes, end: int):
+    """
+    Ensures data is a singular root item
+    :param data: Data to check
+    :type data: bytes
+    :param end: End index of parsed data
+    :type end: int
+    :raises ValueError: Non-singular root item
+    """
+    if len(data) - 1 > end:
+        raise ValueError("Non-singular root item")
+
 
 def _check_missing_terminator(data: bytes) -> int:
     """

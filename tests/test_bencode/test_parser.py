@@ -1,6 +1,7 @@
 import unittest
 
 from src.litany.bencode.parser import (
+    decode,
     _parse_int,
     _parse_byte_string,
     _parse_data,
@@ -8,6 +9,14 @@ from src.litany.bencode.parser import (
     _parse_dict,
 )
 
+class TestDecode(unittest.TestCase):
+    def test_null_root_value(self):
+        data = b""
+        self.assertRaises(ValueError, decode, data)
+    
+    def test_non_singular_root_item(self):
+        data = b"i32ei32e"
+        self.assertRaises(ValueError, decode, data)
 
 class TestParseData(unittest.TestCase):
     def test_int(self):

@@ -10,6 +10,8 @@ from .error_check import (
     _check_length_not_followed_by_colon,
     _check_negative_length,
     _check_unexpected_eof_before_completing_string,
+    _check_null_root_value,
+    _check_non_singular_root_item,
 )
 
 from .util import (
@@ -18,6 +20,35 @@ from .util import (
     _get_datatype,
     CHUNK_TYPES,
 )
+
+
+def decode(data: bytes) -> CHUNK_TYPES:
+    """
+    Parses bytes of some bencoded format
+    :param data: Data to parse
+    :type data: bytes
+
+    :raises ValueError: Non-singular root item
+    :raises ValueError: Null root value
+    :raises ValueError: Missing 'e' terminator
+    :raises ValueError: Has a leading zero
+    :raises ValueError: Is negative zero
+    :raises ValueError: Contains non-digit characters
+    :raises ValueError: Negative length
+    :raises ValueError: Length not followed by colon
+    :raises ValueError: Unexpected EOF before completing string
+    :raises ValueError: Key is not a string
+    :raises ValueError: Duplicate keys
+    :raises ValueError: Keys not sorted
+    :raises ValueError: Missing value for a key
+
+    :returns parsed data:
+    :rtype CHUNK_TYPES:
+    """
+    _check_null_root_value(data)
+    parsed_data, end = _parse_data(data)
+    _check_non_singular_root_item(data, end)
+    return parsed_data
 
 
 def _parse_data(data: bytes) -> tuple[CHUNK_TYPES, int]:
@@ -151,7 +182,6 @@ def _parse_dict(data: bytes) -> tuple[dict, int]:
     prev_key = None
     return_data = dict()
     while len(search_space) > 0:
-        breakpoint()
         if search_space[0:1] == b"e":
             break
 
