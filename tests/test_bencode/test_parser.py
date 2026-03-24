@@ -11,6 +11,12 @@ from src.litany.bencode.parser import (
 
 
 class TestDecode(unittest.TestCase):
+    def test_success(self):
+        data = b"i0e"
+        expected = 0
+        actual = decode(data)
+        self.assertEqual(expected, actual)
+
     def test_null_root_value(self):
         data = b""
         self.assertRaises(ValueError, decode, data)
