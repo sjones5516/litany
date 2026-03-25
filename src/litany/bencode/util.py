@@ -19,9 +19,10 @@ def _get_datatype(data: bytes) -> type:
         return list
     elif prefix == b"d":
         return dict
-    elif prefix in b"123456790-":
+    elif prefix.isdigit() or prefix == b"-":
         return bytes
     else:
+        breakpoint()
         raise ValueError("Invalid type encountered")
 
 
