@@ -1,5 +1,7 @@
 # litany
 
+**This project is currently under hiatus**
+
 This project is an experimental BitTorrent client. The first iteration of this
 project must implement the following:
 
